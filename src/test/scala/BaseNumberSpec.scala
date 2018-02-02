@@ -1,3 +1,5 @@
+package test.scala
+
 import main.scala.BaseNumber
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -7,12 +9,9 @@ class BaseNumberSpec extends FlatSpec with Matchers {
     val m = new BaseNumber("FFA20", 16)
     val o = new BaseNumber("100", 50)
 
-    n.isValidNumber() should be
-    false
-    m.isValidNumber() should be
-    true
-    o.isValidNumber() should be
-    false
+    n.isValidNumber() should be false
+    m.isValidNumber() should be true
+    o.isValidNumber() should be false
   }
 
   it should "be able to produce its decimal value if it is valid" in {
@@ -21,14 +20,10 @@ class BaseNumberSpec extends FlatSpec with Matchers {
     val c = new BaseNumber("420", 10)
     val d = new BaseNumber("A", 2)
 
-    a.toDecimal() should contain
-    3
-    b.toDecimal() should contain
-    255
-    c.toDecimal() should contain
-    420
-    d.toDecimal().isEmpty should be
-    true
+    a.toDecimal() should contain 3
+    b.toDecimal() should contain 255
+    c.toDecimal() should contain 420
+    d.toDecimal().isEmpty should be true
   }
 
   it should "be able to produce its string representation if it is valid" in {
@@ -43,7 +38,7 @@ class BaseNumberSpec extends FlatSpec with Matchers {
     d.toString.isEmpty should be true
   }
 
-  it should "have functioning addition where the result is in the base of the first number" in{
+  it should "have functioning addition where the result is in the base of the first number" in {
     val a = new BaseNumber("10", 2)
     val b = new BaseNumber("2", 16)
 
@@ -55,7 +50,7 @@ class BaseNumberSpec extends FlatSpec with Matchers {
     (m + n).isEmpty should be true
   }
 
-  it should "have functioning subtraction where the result in the base of the first number" in{
+  it should "have functioning subtraction where the result is in the base of the first number" in {
     val a = new BaseNumber("101", 2)
     val b = new BaseNumber("10", 3)
 

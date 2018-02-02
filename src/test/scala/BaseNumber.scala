@@ -12,14 +12,15 @@ class BaseNumber(n: String, base: Int) {
     this(BaseNumber.convertFromDecimal(decimal, base), base)
   }
 
-  //Produces the string value of the number if it is valid
-  override def toString: Option[String] = {
-    if (isValidNumber) Some(n) else None
-  }
-
-  //Returns true if this number is valid
-  def isValidNumber(): Boolean = {
-    BaseNumber.isValid(n, base)
+  //Implements addition operation (will produce None if either number is invalid)
+  def +(b: BaseNumber): Option[BaseNumber] = {
+    b.toDecimal match {
+      case None => None
+      case Some(b: Int) => addNumbers(n, BaseNumber.convertFromDecimal(b, base), base) match {
+        case None => None
+        case Some(n: String) => Some(new BaseNumber(n, base))
+      }
+    }
   }
 
   //Returns the number as an integer in base 10 if the number is valid
@@ -44,28 +45,6 @@ class BaseNumber(n: String, base: Int) {
       accumulator(n, 0, 0)
     } else None
   }
-
-
-  //Returns a new BaseNumber with a different base, but the same value
-  def changeBase(newBase: Int): Option[BaseNumber] = {
-    toDecimal match {
-      case None => None
-      case Some(value: Int) => Some(new BaseNumber(BaseNumber.convertFromDecimal(value, newBase), newBase))
-    }
-  }
-
-
-  //Implements addition operation (will produce None if either number is invalid)
-  def +(b: BaseNumber): Option[BaseNumber] = {
-    b.toDecimal match {
-      case None => None
-      case Some(b: Int) => addNumbers(n, BaseNumber.convertFromDecimal(b, base), base) match {
-        case None => None
-        case Some(n: String) => Some(new BaseNumber(n, base))
-      }
-    }
-  }
-
 
   //Returns the sum of two numbers of the same base if they are both valid
   private def addNumbers(a: String, b: String, base: Int): Option[String] = {
@@ -129,6 +108,7 @@ class BaseNumber(n: String, base: Int) {
         }
       }
     }
+
     this.toDecimal() match {
       case None => None
       case Some(aDec: Int) => b.toDecimal() match {
@@ -150,28 +130,29 @@ class BaseNumber(n: String, base: Int) {
     }
   }
 
+  //Produces the string value of the number if it is valid
+  override def toString: Option[String] = {
+    if (isValidNumber) Some(n) else None
+  }
+
+  //Returns true if this number is valid
+  def isValidNumber(): Boolean = {
+    BaseNumber.isValid(n, base)
+  }
+
+  //Returns a new BaseNumber with a different base, but the same value
+  def changeBase(newBase: Int): Option[BaseNumber] = {
+    toDecimal match {
+      case None => None
+      case Some(value: Int) => Some(new BaseNumber(BaseNumber.convertFromDecimal(value, newBase), newBase))
+    }
+  }
 
   private object BaseNumber {
     //Returns true if a number in string form and base make sense together
     def isValid(n: String, base: Int): Boolean = {
       //n.filter(c => !c.isDigit).isEmpty && n.filter(c => c.toString.toInt >= base).isEmpty
       n.filter(c => !isDigit(c, base)).isEmpty && base > 1 && base <= 36
-    }
-
-    //Returns true if the char is a digit in this base
-    def isDigit(c: Char, base: Int): Boolean = {
-      (c.isDigit && c.toInt - 48 < base) || (base > 10 && c.isLetter && c.toUpper < 55 + base)
-    }
-
-    //Only returns a value if the char is a valid digit in this base
-    def toInt(c: Char, base: Int): Option[Int] = {
-      if (c.isDigit && c.toInt - 48 < base) {
-        Some(c.toString.toInt)
-      } else if (isDigit(c, base)) {
-        Some(c.toInt - 55)
-      } else {
-        None
-      }
     }
 
     //Returns the string digit that contains that numerical value, if it is
@@ -186,11 +167,26 @@ class BaseNumber(n: String, base: Int) {
       }
     }
 
-
     //Returns the value of the last character of a number
     def last(n: String): Option[Int] = if (n.isEmpty) Some(0) else toInt(n.last, base) match {
       case None => None
       case Some(n: Int) => Some(n)
+    }
+
+    //Only returns a value if the char is a valid digit in this base
+    def toInt(c: Char, base: Int): Option[Int] = {
+      if (c.isDigit && c.toInt - 48 < base) {
+        Some(c.toString.toInt)
+      } else if (isDigit(c, base)) {
+        Some(c.toInt - 55)
+      } else {
+        None
+      }
+    }
+
+    //Returns true if the char is a digit in this base
+    def isDigit(c: Char, base: Int): Boolean = {
+      (c.isDigit && c.toInt - 48 < base) || (base > 10 && c.isLetter && c.toUpper < 55 + base)
     }
 
     //Returns the 'next' string where the last digit is removed
