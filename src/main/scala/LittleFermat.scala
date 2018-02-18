@@ -6,11 +6,9 @@ object LittleFermat extends App {
       if (uncertainty < .1) true
 
       else {
-        val a = scala.util.Random.nextInt(p)
+        val a = scala.util.Random.nextInt(p - 1) + 1
 
-        if (a == 0) loop(uncertainty)
-
-        else if (Exponentiation.fastModular(a, p - 1, p) == 1) {
+        if (Exponentiation.fastModular(a, p - 1, p) == 1) {
           loop(uncertainty * .75)
         } else false
       }

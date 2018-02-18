@@ -22,5 +22,5 @@ object Euclidean extends App {
     }
   }
 
-  print(extended(7, 55))
+  print(extended(5678, 1234))
 }
